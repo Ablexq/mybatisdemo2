@@ -53,6 +53,16 @@ VALUES (1, 'Jone', 18, 'test1@baomidou.com'),
        (3, 'Tom', 28, 'test3@baomidou.com'),
        (4, 'Sandy', 21, 'test4@baomidou.com'),
        (5, 'Billie', 24, 'test5@baomidou.com');
+
+INSERT INTO `user` (id, name, age, email)
+VALUES (6, 'Jone6', 10, 'test1@baomidou.com'),
+       (7, 'Jack7', 22, 'test2@baomidou.com'),
+       (8, 'Tom8', 283, 'test3@baomidou.com'),
+       (9, 'Sandy9', 241, 'test4@baomidou.com'),
+       (10, 'Billie0', 224, 'test5@baomidou.com');
+
+ALTER TABLE user MODIFY id BIGINT(20) AUTO_INCREMENT;
+
 ```
 application.properties：
 ``` 
@@ -116,9 +126,57 @@ User(id=4, name=Sandy, age=21, email=test4@baomidou.com)
 User(id=5, name=Billie, age=24, email=test5@baomidou.com)
 ```
 
+# 分页
 
+### 添加分页配置类
+``` 
+//Spring boot方式
+@EnableTransactionManagement
+@Configuration
+@MapperScan("com.example.demo.mapper")
+public class MybatisPlusConfig {
 
+    /**
+     * 分页插件
+     */
+    @Bean
+    public PaginationInterceptor paginationInterceptor() {
+        return new PaginationInterceptor();
+    }
+}
 
+```
+
+测试：
+
+``` 
+@Test
+public void test1(){
+    System.out.println("----- baseMapper 自带分页 ------");
+    Page<User> page = new Page<>(1, 5);
+    IPage<User> userIPage = userMapper.selectPage(page,null);
+    Assert.assertSame(page, userIPage);
+    System.out.println("总条数 ------> " + userIPage.getTotal());
+    System.out.println("当前页数 ------> " + userIPage.getCurrent());
+    System.out.println("当前每页显示数 ------> " + userIPage.getSize());
+    List<User> records = userIPage.getRecords();
+    records.forEach(System.out::println);
+    System.out.println("----- baseMapper 自带分页 ------");
+}
+```
+打印：
+``` 
+----- baseMapper 自带分页 ------
+总条数 ------> 10
+当前页数 ------> 1
+当前每页显示数 ------> 5
+User(id=1, name=Jone, age=18, email=test1@baomidou.com)
+User(id=2, name=Jack, age=20, email=test2@baomidou.com)
+User(id=3, name=Tom, age=28, email=test3@baomidou.com)
+User(id=4, name=Sandy, age=21, email=test4@baomidou.com)
+User(id=5, name=Billie, age=24, email=test5@baomidou.com)
+----- baseMapper 自带分页 ------
+```
 
 
 
