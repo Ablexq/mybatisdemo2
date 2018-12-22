@@ -178,10 +178,62 @@ User(id=5, name=Billie, age=24, email=test5@baomidou.com)
 ----- baseMapper 自带分页 ------
 ```
 
+# 条件查找并分页
 
+### 添加mapper类中方法
+``` 
+public interface UserMapper extends BaseMapper<User> {
 
+    /*按照年龄查找*/
+    IPage<User> selectAge10(Page page, @Param("age") Integer age);
 
+}
+```
+### 添加mapper的xml，映射mapper类
 
+``` 
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.demo.mapper.UserMapper">
+    <select id="selectAge10" resultType="com.example.demo.entity.User">
+        SELECT * FROM user WHERE age=#{age}
+    </select>
+</mapper>
+
+```
+### 添加mapper的xml文件扫描
+``` 
+#
+mybatis-plus.mapper-locations=classpath:/mapper/*.xml
+```
+
+### 测试
+``` 
+/*分页查找指定年龄*/
+@Test
+public void test3() {
+    System.out.println("----- baseMapper 自带分页 ------");
+    Page<User> page = new Page<>(1, 5);
+    IPage<User> userIPage = userMapper.selectAge10(page, 20);
+    Assert.assertSame(page, userIPage);
+    System.out.println("总条数 ------> " + userIPage.getTotal());
+    System.out.println("当前页数 ------> " + userIPage.getCurrent());
+    System.out.println("当前每页显示数 ------> " + userIPage.getSize());
+    List<User> records = userIPage.getRecords();
+    records.forEach(System.out::println);
+    System.out.println("----- baseMapper 自带分页 ------");
+}
+```
+打印：
+``` 
+----- baseMapper 自带分页 ------
+总条数 ------> 2
+当前页数 ------> 1
+当前每页显示数 ------> 5
+User(id=2, name=Jack, age=20, email=test2@baomidou.com)
+User(id=10, name=Billie0, age=20, email=test5@baomidou.com)
+----- baseMapper 自带分页 ------
+```
 
 
 

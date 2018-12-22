@@ -25,6 +25,7 @@ public class DemoApplicationTests {
     @Resource
     private UserMapper userMapper;
 
+    /*查找全部*/
     @Test
     public void testSelect() {
         System.out.println(("----- selectAll method test ------"));
@@ -33,25 +34,12 @@ public class DemoApplicationTests {
         userList.forEach(System.out::println);
     }
 
+    /*查找第一页*/
     @Test
-    public void test(){
+    public void test1() {
         System.out.println("----- baseMapper 自带分页 ------");
         Page<User> page = new Page<>(1, 5);
-        IPage<User> userIPage = userMapper.selectPage(page, new QueryWrapper<User>()
-                .eq("age", 20).eq("name", "Jack"));
-        Assert.assertSame(page, userIPage);
-        System.out.println("总条数 ------> " + userIPage.getTotal());
-        System.out.println("当前页数 ------> " + userIPage.getCurrent());
-        System.out.println("当前每页显示数 ------> " + userIPage.getSize());
-        System.out.println(userIPage.getRecords());
-        System.out.println("----- baseMapper 自带分页 ------");
-    }
-
-    @Test
-    public void test1(){
-        System.out.println("----- baseMapper 自带分页 ------");
-        Page<User> page = new Page<>(1, 5);
-        IPage<User> userIPage = userMapper.selectPage(page,null);
+        IPage<User> userIPage = userMapper.selectPage(page, null);
         Assert.assertSame(page, userIPage);
         System.out.println("总条数 ------> " + userIPage.getTotal());
         System.out.println("当前页数 ------> " + userIPage.getCurrent());
@@ -61,11 +49,27 @@ public class DemoApplicationTests {
         System.out.println("----- baseMapper 自带分页 ------");
     }
 
+    /*查找第二页*/
     @Test
-    public void test2(){
+    public void test2() {
         System.out.println("----- baseMapper 自带分页 ------");
         Page<User> page = new Page<>(2, 5);
-        IPage<User> userIPage = userMapper.selectPage(page,null);
+        IPage<User> userIPage = userMapper.selectPage(page, null);
+        Assert.assertSame(page, userIPage);
+        System.out.println("总条数 ------> " + userIPage.getTotal());
+        System.out.println("当前页数 ------> " + userIPage.getCurrent());
+        System.out.println("当前每页显示数 ------> " + userIPage.getSize());
+        List<User> records = userIPage.getRecords();
+        records.forEach(System.out::println);
+        System.out.println("----- baseMapper 自带分页 ------");
+    }
+
+    /*分页查找指定年龄*/
+    @Test
+    public void test3() {
+        System.out.println("----- baseMapper 自带分页 ------");
+        Page<User> page = new Page<>(1, 5);
+        IPage<User> userIPage = userMapper.selectAge10(page, 20);
         Assert.assertSame(page, userIPage);
         System.out.println("总条数 ------> " + userIPage.getTotal());
         System.out.println("当前页数 ------> " + userIPage.getCurrent());
